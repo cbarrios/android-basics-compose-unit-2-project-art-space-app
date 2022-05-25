@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +31,9 @@ import androidx.compose.ui.unit.sp
 import com.lalosapps.artspace.data.Artwork
 import com.lalosapps.artspace.data.ArtworkProvider.Companion.images
 import com.lalosapps.artspace.ui.theme.ArtSpaceTheme
+
+const val PREVIOUS_BUTTON_TAG = "previous"
+const val NEXT_BUTTON_TAG = "next"
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,7 +94,7 @@ fun ArtworkWall(image: Artwork) {
     ) {
         Image(
             painter = painterResource(id = resource),
-            contentDescription = null,
+            contentDescription = image.id.toString(),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(32.dp),
@@ -145,13 +149,13 @@ fun DisplayController(
     ) {
         Button(
             onClick = onPreviousClick,
-            modifier = Modifier.width(140.dp)
+            modifier = Modifier.width(140.dp).testTag(PREVIOUS_BUTTON_TAG)
         ) {
             Text(text = stringResource(R.string.previous_button))
         }
         Button(
             onClick = onNextClick,
-            modifier = Modifier.width(140.dp)
+            modifier = Modifier.width(140.dp).testTag(NEXT_BUTTON_TAG)
         ) {
             Text(text = stringResource(R.string.next_button))
         }
