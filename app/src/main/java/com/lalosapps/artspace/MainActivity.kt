@@ -4,6 +4,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -59,13 +60,8 @@ fun MyArtSpaceApp() {
                 ArtworkWall(image = image)
                 ArtworkDescriptor(image = image)
                 DisplayController(
-                    onPreviousClick = {
-                        index = when (index) {
-                            0 -> images.lastIndex
-                            else -> index - 1
-                        }
-                    },
-                    onNextClick = { index = (index + 1) % images.size }
+                    onPreviousClick = { index = getPreviousIndex(index) },
+                    onNextClick = { index = getNextIndex(index) }
                 )
             }
         }
@@ -161,6 +157,19 @@ fun DisplayController(
         }
     }
 
+}
+
+@VisibleForTesting
+internal fun getPreviousIndex(index: Int): Int {
+    return when (index) {
+        0 -> images.lastIndex
+        else -> index - 1
+    }
+}
+
+@VisibleForTesting
+internal fun getNextIndex(index: Int): Int {
+    return (index + 1) % images.size
 }
 
 @Preview("Light Mode")
