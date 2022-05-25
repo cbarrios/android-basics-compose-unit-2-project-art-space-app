@@ -13,6 +13,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -39,7 +43,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MyArtSpaceApp() {
-    val image = images[1]
+    var index by rememberSaveable { mutableStateOf(0) }
+    val image = images[index]
     ArtSpaceTheme {
         // A surface container using the 'background' color from the theme
         Surface(
@@ -51,11 +56,16 @@ fun MyArtSpaceApp() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                ArtworkWall(image)
-                ArtworkDescriptor(image)
+                ArtworkWall(image = image)
+                ArtworkDescriptor(image = image)
                 DisplayController(
-                    onPreviousClick = {},
-                    onNextClick = {}
+                    onPreviousClick = {
+                        index = when (index) {
+                            0 -> images.lastIndex
+                            else -> index - 1
+                        }
+                    },
+                    onNextClick = { index = (index + 1) % images.size }
                 )
             }
         }
@@ -63,7 +73,7 @@ fun MyArtSpaceApp() {
 }
 
 @Composable
-fun ArtworkWall(image: Artwork = images[1]) {
+fun ArtworkWall(image: Artwork) {
     val resource = when (image.id) {
         0 -> R.drawable.image1
         1 -> R.drawable.image2
@@ -94,7 +104,7 @@ fun ArtworkWall(image: Artwork = images[1]) {
 }
 
 @Composable
-fun ArtworkDescriptor(image: Artwork = images[1]) {
+fun ArtworkDescriptor(image: Artwork) {
     val isDark = isSystemInDarkTheme()
     Surface(
         color = MaterialTheme.colors.surface,
@@ -115,7 +125,7 @@ fun ArtworkDescriptor(image: Artwork = images[1]) {
                         fontWeight = FontWeight.Bold
                     )
                 )
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = "(${image.year})",
                     style = MaterialTheme.typography.body1.copy(
